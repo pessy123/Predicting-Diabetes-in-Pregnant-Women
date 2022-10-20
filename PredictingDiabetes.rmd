@@ -1,0 +1,569 @@
+---
+title: "Group Project"
+author: "Zelalem Denekew"
+date: '2022-06-13'
+output: word_document
+---
+
+##### I first import usful libraries
+
+```{r}
+library(dplyr)
+library(magrittr)
+library(knitr)
+library(ggplot2)
+```
+
+### A) Load the dataset in R Studio. Examine the first few rows of data using R. Explain your findings. Did you notice anything abnormal or interesting?
+
+##### We first import the provided data set
+
+```{r}
+patients <- read.csv("C:/Users/Z/Desktop/CIS 690/Group project/patients.csv")
+```
+
+##### To check and examine the data and the summary of the data
+
+```{r}
+head(patients)
+summary(patients)
+```
+
+### B) calculate the mean, median, sd and quartiles of all the features means of all the values
+
+```{r}
+# For all the mean values 
+pregnancies_mean <- mean(patients$Pregnancies)
+glucose_mean <- mean(patients$Glucose)
+bloodpressure_mean <- mean(patients$BloodPressure)
+skinThickness_mean <- mean(patients$SkinThickness)
+insulin_mean <- mean(patients$Insulin)
+bmi_mean <- mean(patients$BMI)
+pedigree_mean <- mean(patients$Pedigree)
+age_mean <- mean(patients$Age)
+
+# For all of the sd values
+pregnancies_sd <- sd(patients$Pregnancies)
+glucose_sd <- sd(patients$Glucose)
+blood_sd <- sd(patients$BloodPressure)
+skinth_sd <- sd(patients$SkinThickness)
+insulin_sd <- sd(patients$Insulin)
+bmi_sd <- sd(patients$BMI)
+pedigree_sd <- sd(patients$Pedigree)
+age_sd <- sd(patients$age)
+```
+
+#### To find the quartiles (where Q3 is 75% percentile, Q1 is the 25% percentile and Q2 is the 50% percentile which is the median)
+
+##### To find the values of Q3
+
+```{r}
+pregnancies_q3 <- quantile(patients$Pregnancies, 0.75)
+glucose_q3 <- quantile(patients$Glucose, 0.75)
+blood_q3 <- quantile(patients$BloodPressure, 0.75)
+skinThickness_q3 <- quantile(patients$SkinThickness, 0.75)
+insulin_q3 <- quantile(patients$Insulin, 0.75)
+bmi_q3 <- quantile(patients$BMI, 0.75)
+pedigree_q3 <- quantile(patients$Pedigree, 0.75)
+age_q3 <- quantile(patients$Age, 0.75)
+```
+
+##### To find the values of Q1
+
+```{r}
+pregnancies_q1 <- quantile(patients$Pregnancies, 0.25)
+glucose_q1 <- quantile(patients$Glucose, 0.25)
+blood_q1 <- quantile(patients$BloodPressure, 0.25)
+skinThickness_q1 <- quantile(patients$SkinThickness, 0.25)
+insulin_q1 <- quantile(patients$Insulin, 0.25)
+bmi_q1 <- quantile(patients$BMI, 0.25)
+pedigree_q1 <- quantile(patients$Pedigree, 0.25)
+age_q1 <- quantile(patients$Age, 0.25)
+```
+
+##### And finally to find the values of Q2 (median), we can either use similar code or use the median function
+
+```{r}
+pregnancies_q2 <- quantile(patients$Pregnancies, 0.5)
+glucose_q2 <- quantile(patients$Glucose, 0.5)
+blood_q2 <- quantile(patients$BloodPressure, 0.5)
+skinThickness_q2 <- quantile(patients$SkinThickness, 0.5)
+insulin_q2 <- quantile(patients$Insulin, 0.5)
+bmi_q2 <- quantile(patients$BMI, 0.5)
+pedigree_q2 <- quantile(patients$Pedigree, 0.5)
+age_q2 <- quantile(patients$Age, 0.5)
+```
+
+```{r}
+
+print(paste("Mean for pregnancies :",pregnancies_mean))
+print(paste("Mean for glucose :",glucose_mean))
+print(paste("Mean for blood pressure :",bloodpressure_mean))
+print(paste("Mean for skin thickness :",skinThickness_mean))
+print(paste("Mean for insulin :",insulin_mean))
+print(paste("Mean for bmi :",bmi_mean))
+print(paste("Mean for pedigree :",pedigree_mean))
+print(paste("Mean for age :",age_mean))
+
+print(paste("Standard Deviation for pregnancies :",pregnancies_sd))
+print(paste("Standard Deviation for glucose :",glucose_sd))
+print(paste("Standard Deviation for blood pressure :",blood_sd))
+print(paste("Standard Deviation for skin thickness :",skinth_sd))
+print(paste("Standard Deviation for insulin :",insulin_sd))
+print(paste("Standard Deviation for bmi :",bmi_sd))
+print(paste("Standard Deviation for pedigree :",pedigree_sd))
+print(paste("Standard Deviation for age :",age_sd))
+
+print(paste("Q3 for pregnancies :",pregnancies_q3))
+print(paste("Q3 for glucose :",glucose_q3))
+print(paste("Q3 for blood pressure :",blood_q3))
+print(paste("Q3 for skin thickness :",skinThickness_q3))
+print(paste("Q3 for insulin :",insulin_q3))
+print(paste("Q3 for bmi :",bmi_q3))
+print(paste("Q3 for pedigree :",pedigree_q3))
+print(paste("Q3 for age :",age_q3))
+
+print(paste("Q1 for pregnancies :",pregnancies_q1))
+print(paste("Q1 for glucose :",glucose_q1))
+print(paste("Q1 for blood pressure :",blood_q1))
+print(paste("Q1 for skin thickness :",skinThickness_q1))
+print(paste("Q1 for insulin :",insulin_q1))
+print(paste("Q1 for bmi :",bmi_q1))
+print(paste("Q1 for pedigree :",pedigree_q1))
+print(paste("Q1 for age :",age_q1))
+
+print(paste("Q2 for pregnancies :",pregnancies_q2))
+print(paste("Q2 for glucose :",glucose_q2))
+print(paste("Q2 for blood pressure :",blood_q2))
+print(paste("Q2 for skin thickness :",skinThickness_q2))
+print(paste("Q2 for insulin :",insulin_q2))
+print(paste("Q2 for bmi :",bmi_q2))
+print(paste("Q2 for pedigree :",pedigree_q2))
+print(paste("Q2 for age :",age_q2))
+```
+
+### C) Find missing values for each independent variable and fill them with median values. The missing values for independent variables in the dataset are coded 0.
+
+```{r}
+# To first check for all missing values
+colSums(patients == 0)
+
+# To replace the missing values with median
+patients$Pregnancies[patients$Pregnancies==0]=median(patients$Pregnancies[patients$Pregnancies>0])
+
+patients$Glucose[patients$Glucose==0]=median(patients$Glucose[patients$Glucose>0])
+
+patients$BloodPressure[patients$BloodPressure==0]=median(patients$BloodPressure[patients$BloodPressure>0])
+
+patients$SkinThickness[patients$SkinThickness==0]=median(patients$SkinThickness[patients$SkinThickness>0])
+
+patients$Insulin[patients$Insulin==0]=median(patients$Insulin[patients$Insulin>0])
+
+patients$BMI[patients$BMI==0]=median(patients$BMI[patients$BMI>0])
+
+patients$Pedigree[patients$Pedigree==0]=median(patients$Pedigree[patients$Pedigree>0])
+
+patients$Age[patients$Age==0]=median(patients$Age[patients$Age>0])
+
+#To check for missing values or lack thereof
+colSums(patients == 0)
+```
+
+### D) Find outliers for each independent variable using the IQR rule
+
+```{r}
+# To find the outliers using the IQR rule
+preg_out1 = pregnancies_q3 + ((pregnancies_q3 - pregnancies_q1) * 1.5)
+preg_out2 = pregnancies_q1 - ((pregnancies_q3 - pregnancies_q1) * 1.5)
+
+glucose_out1 = glucose_q3 + ((glucose_q3 - glucose_q1) * 1.5)
+glucose_out2 = glucose_q1 - ((glucose_q3 - glucose_q1) * 1.5) 
+
+blood_out1 = blood_q3 + ((blood_q3 - blood_q1) * 1.5)
+blood_out2 = blood_q1 - ((blood_q3 - blood_q1) * 1.5)
+
+skinThickness_out1 = skinThickness_q3 + ((skinThickness_q3 - skinThickness_q1) * 1.5)
+skinThickness_out2 = skinThickness_q1 - ((skinThickness_q3 - skinThickness_q1) * 1.5)
+
+insulin_out1 = insulin_q3 + ((insulin_q3 - insulin_q1) * 1.5)
+insulin_out2 = insulin_q1 - ((insulin_q3 - insulin_q1) * 1.5)
+
+bmi_out1 = bmi_q3 + ((bmi_q3 - bmi_q1) * 1.5)
+bmi_out2 = bmi_q1 - ((bmi_q3 - bmi_q1) * 1.5)
+
+pedigree_out1 = pedigree_q3 + ((pedigree_q3 - pedigree_q1) * 1.5)
+pedigree_out2 = pedigree_q1 - ((pedigree_q3 - pedigree_q1) * 1.5)
+
+age_out1 = age_q3 + ((age_q3 - age_q1) * 1.5)
+age_out2 = age_q1 - ((age_q3 - age_q1) * 1.5)
+```
+
+```{r}
+# To check the outliers using boxplots
+boxplot(x=patients$Pregnancies)
+boxplot(x=patients$Glucose)
+boxplot(x=patients$BloodPressure)
+boxplot(x=patients$SkinThickness)
+boxplot(x=patients$Insulin)
+boxplot(x=patients$BMI)
+boxplot(x=patients$Pedigree)
+boxplot(x=patients$Age)
+```
+
+##### To now check and find what the outliers are for each of the features
+
+```{r}
+# pregnancies 
+preg_out1
+preg_out2
+
+# Since glucose does not have any outliers (as observed in the box plot)
+
+# blood pressure
+blood_out1
+blood_out2
+
+# Skin Thickness
+skinThickness_out1
+skinThickness_out2
+
+# insulin
+insulin_out1
+insulin_out2
+
+# BMI
+bmi_out1
+bmi_out2
+
+# pedigree
+pedigree_out1
+pedigree_out2
+
+# age
+age_out1
+age_out2
+```
+
+### E) Replace outliers with median Values.
+
+```{r}
+# for pregnancies
+
+patients.clean <- patients %>%
+  mutate(Pregnancies = replace(Pregnancies, Pregnancies > preg_out1, median(Pregnancies)))
+
+# to check
+preg_out <- boxplot.stats(patients.clean$Pregnancies)$out
+preg_out
+boxplot(x=patients.clean$Pregnancies)
+
+# for glucose - There are no medians as we observed from the box plot 
+# to check
+glucose_out <- boxplot.stats(patients.clean$Glucose)$out
+glucose_out
+
+# for blood pressure
+patients.clean <- patients %>%
+  mutate(BloodPressure = replace(BloodPressure, BloodPressure > 104, median(BloodPressure)))
+patients.clean <- patients %>%
+  mutate(BloodPressure = replace(BloodPressure, BloodPressure < 40, median(BloodPressure)))
+
+# to check
+bloodp_out <- boxplot.stats(patients.clean$BloodPressure)$out
+bloodp_out
+boxplot(x=patients.clean$BloodPressure)
+
+# For skin thickness
+patients.clean <- patients %>%
+  mutate(SkinThickness = replace(SkinThickness, SkinThickness > skinThickness_out1, median(SkinThickness)))
+patients.clean <- patients %>%
+  mutate(SkinThickness = replace(SkinThickness, SkinThickness < skinThickness_out2, median(SkinThickness)))
+
+# to check
+skinT_out <- boxplot.stats(patients.clean$SkinThickness)$out
+skinT_out
+
+# for insulin
+patients.clean <- patients %>%
+  mutate(Insulin = replace(Insulin, Insulin > insulin_out1, median(Insulin)))
+patients.clean <- patients %>%
+  mutate(Insulin = replace(Insulin, Insulin < insulin_out2, median(Insulin)))
+
+# to check
+insulin_out <- boxplot.stats(patients.clean$Insulin)$out
+insulin_out
+
+# for BMI
+patients.clean <- patients %>%
+  mutate(BMI = replace(BMI, BMI > bmi_out1, median(BMI)))
+patients.clean <- patients %>%
+  mutate(BMI = replace(BMI, BMI < bmi_out2, median(BMI)))
+
+# to check
+bmi_out <- boxplot.stats(patients.clean$BMI)$out
+bmi_out
+
+# for pedigree
+patients.clean <- patients %>%
+  mutate(Pedigree = replace(Pedigree, Pedigree > pedigree_out1, median(Pedigree)))
+patients.clean <- patients %>%
+  mutate(Pedigree = replace(Pedigree, Pedigree < pedigree_out1, median(Pedigree)))
+
+# to check
+pedigree_out <- boxplot.stats(patients.clean$Pedigree)$out
+pedigree_out
+
+# for age
+patients.clean <- patients %>%
+  mutate(Age = replace(Age, Age > age_out1, median(Age)))
+patients.clean <- patients %>%
+  mutate(Age = replace(Age, Age < age_out2, median(Age)))
+
+# to check
+age_out <- boxplot.stats(patients.clean$Age)$out
+age_out
+```
+
+##### To check the updated boxplots for observing the changes in outliers
+
+```{r}
+boxplot(x=patients.clean$Pregnancies)
+boxplot(x=patients.clean$Glucose)
+boxplot(x=patients.clean$BloodPressure)
+boxplot(x=patients.clean$SkinThickness)
+boxplot(x=patients.clean$Insulin)
+boxplot(x=patients.clean$BMI)
+boxplot(x=patients.clean$Pedigree)
+boxplot(x=patients.clean$Age)
+```
+
+### F) Find the best performing variables / features using a correlogram.
+
+```{r}
+library(corrplot)
+
+P.cor <- cor(patients)
+head(round(P.cor,2))
+
+corrplot(P.cor, method = "color", addCoef.col = "black")
+```
+
+##### Based on the correlogram we can see that the more highly correlated features are (considering Diagnosis as our target function): 1. Glucose=0.49, 2.BMI = 0.3, and pregnancies = 0.23 are the higher correlated and are the features that we have chosen to select for our analysis and our first Regression Model.
+
+### G. Standardaize your features to Guassian distribution
+
+```{r}
+# to standardize the data, we first split the data for training and testing using a 70/30 split
+dt = sort(sample(nrow(patients), nrow(patients)*.7))
+#head(dt)
+traindata <- patients[dt,]
+testdata <- patients[-dt,]
+#head(traindata)
+# And to now standardize both the train and test data
+
+xtrain <- as.data.frame(scale(traindata[1:8]))
+xtest <- as.data.frame(scale(testdata[1:8]))
+
+head(xtrain)
+#head(xtest)
+```
+
+### H) Create a logistic regression model (call it LRM1) using your best features. Describe your model.
+
+```{r}
+# We will first set the seed so that we can have a constant out put
+set.seed(1)
+
+# we will then use 70% of the split data as training and the remaining 30% as testing. 
+# Before running the LRM1 we will first add the target function (diagnosis) back to our train and test data sets
+
+xtrain$Diagnosis <- traindata$Diagnosis
+
+xtest$Diagnosis <- testdata$Diagnosis
+
+# We then ran the LRM1 model
+options(scipen = 999)
+LRM1 <- glm(Diagnosis~Glucose+Pregnancies+BMI, family = "binomial",data=xtrain)
+
+summary(LRM1)
+
+# to predict the outcome of the training set 
+predictTrain1 <- predict(LRM1, newdata= xtest, type = "response")
+summary(predictTrain1)
+```
+
+### I) Create a classification report of your model.
+
+```{r}
+threshold_0.5_1 <- table(xtest$Diagnosis, predictTrain1 > 0.5)
+threshold_0.5_1
+```
+
+### J) Describe your classification report (precision, recall, F1 score, and support).
+
+```{r}
+err_metric=function(CM)
+{
+  TN =CM[1,1]
+  TP =CM[2,2]
+  FP =CM[1,2]
+  FN =CM[2,1]
+  precision =(TP)/(TP+FP)
+  recall_score =(FP)/(FP+TN)
+  
+  f1_score=2*((precision*recall_score)/(precision+recall_score))
+  accuracy_model  =(TP+TN)/(TP+TN+FP+FN)
+  False_positive_rate =(FP)/(FP+TN)
+  False_negative_rate =(FN)/(FN+TP)
+  
+  print(paste("Precision value of the model: ",round(precision,2)))
+  print(paste("Accuracy of the model: ",round(accuracy_model,2)))
+  print(paste("Recall value of the model: ",round(recall_score,2)))
+  print(paste("False Positive rate of the model: ",round(False_positive_rate,2)))
+  
+  print(paste("False Negative rate of the model: ",round(False_negative_rate,2)))
+  
+  print(paste("f1 score of the model: ",round(f1_score,2)))
+}
+err_metric(threshold_0.5_1)
+
+```
+
+### K) Create the accuracy score of your model. Describe the accuracy score.
+
+```{r}
+accuracy_0.5 <- round(sum(diag(threshold_0.5_1))/sum(threshold_0.5_1),2)
+sprintf("Accuracy is %s",accuracy_0.5)
+
+#Mis-classification error rate
+
+MC_0.5 <- 1-accuracy_0.5
+sprintf("Mis-classification error is %s",MC_0.5)
+
+```
+
+### L) Create another logistic regression model (call it LRM2). Use all the independent features this time (instead of your best performing features).
+
+```{r}
+LRM2 <- glm(Diagnosis ~ Pregnancies + Glucose +Insulin + BloodPressure + SkinThickness + BMI + Age + Pedigree, family="binomial", data=xtrain)
+
+summary(LRM2)
+
+predictTrain2 <- predict(LRM2, newdata= xtest, type = "response")
+summary(predictTrain2)
+
+threshold_0.5_2 <- table(xtest$Diagnosis, predictTrain2 > 0.5)
+threshold_0.5_2
+
+
+accuracy_0.5 <- round(sum(diag(threshold_0.5_2))/sum(threshold_0.5_2),2)
+sprintf("Accuracy is %s",accuracy_0.5)
+MC_0.5 <- 1-accuracy_0.5
+sprintf("Mis-classification error is %s",MC_0.5)
+
+```
+
+```{r}
+err_metric=function(CM)
+{
+  TN =CM[1,1]
+  TP =CM[2,2]
+  FP =CM[1,2]
+  FN =CM[2,1]
+  precision =(TP)/(TP+FP)
+  recall_score =(FP)/(FP+TN)
+  
+  f1_score=2*((precision*recall_score)/(precision+recall_score))
+  accuracy_model  =(TP+TN)/(TP+TN+FP+FN)
+  False_positive_rate =(FP)/(FP+TN)
+  False_negative_rate =(FN)/(FN+TP)
+  
+  print(paste("Precision value of the model: ",round(precision,2)))
+  print(paste("Accuracy of the model: ",round(accuracy_model,2)))
+  print(paste("Recall value of the model: ",round(recall_score,2)))
+  print(paste("False Positive rate of the model: ",round(False_positive_rate,2)))
+  
+  print(paste("False Negative rate of the model: ",round(False_negative_rate,2)))
+  
+  print(paste("f1 score of the model: ",round(f1_score,2)))
+}
+err_metric(threshold_0.5_2)
+```
+
+### M) Compare the two models (LRM1 and LRM2) based on the classification report and accuracy score. Which one is a better model? Why?
+
+```{r}
+AIC(LRM1,LRM2)
+```
+
+```{r}
+library(caTools)
+library(ROCR) 
+    
+ROCPred <- prediction(predictTrain1, xtest$Diagnosis) 
+ROCPer <- performance(ROCPred, measure = "tpr", 
+                             x.measure = "fpr")
+
+auc <- performance(ROCPred, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
+
+plot(ROCPer)
+plot(ROCPer, colorize = TRUE, 
+     print.cutoffs.at = seq(0.1, by = 0.1), 
+     main = "ROC CURVE")
+abline(a = 0, b = 1)
+   
+auc <- round(auc, 4)
+legend(.6, .4, auc, title = "AUC", cex = 1)
+```
+
+```{r}
+library(caTools)
+library(ROCR) 
+    
+ROCPred <- prediction(predictTrain2, xtest$Diagnosis) 
+ROCPer <- performance(ROCPred, measure = "tpr", 
+                             x.measure = "fpr")
+
+auc <- performance(ROCPred, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
+
+plot(ROCPer)
+plot(ROCPer, colorize = TRUE, 
+     print.cutoffs.at = seq(0.1, by = 0.1), 
+     main = "ROC CURVE")
+abline(a = 0, b = 1)
+   
+auc <- round(auc, 4)
+legend(.6, .4, auc, title = "AUC", cex = 1)
+```
+
+### N) What would be your suggestions for further improving the accuracy of your chosen model?
+
+##### Based on the models that we made and the results we had found when running said models, we concluded that: Increasing the data collected and to also make sure to diversify the sample collected to represent more demographics to better resemble the population would yield better results. This we believe is true not only for our models but in real world application as well. We also suggest that finetuning the parameters used could potentially result in the model providing better predictions. We have observed such occurrences when using different threshold values. In the end, we used a threshold value of 0.5 as it is the more recommended value. But when using different values, we observed that not only did the models perform at varying levels but also at times the performance levels shifted as my teammate eluded on the AUC curves where the second model performed better than the first in few of the values, but this leads us to assume that further investigation and analysis could yield better performance from our models.And finally, our group strongly suggests that better feature selection would aid in improving the accuracy of the chosen model. Since we had only included the top 3 highly correlated features for our selected model, we believe that if we diversified and included other features that may not be as closely correlated to our target function and try different combinations of the features, this could yield with better prediction performance.
+
+### O) What would be the pitfalls or weaknesses of your model if the hospital decided to deploy it to predict diabetes?
+
+##### first one is that there could be a possible ethical pitfall.
+
+##### In the research that we had done, we observed this being mentioned a couple of times. One of the main ethical pitfalls experienced by medical personnel of any health institution is that their diagnosis of their patients is always derived from the data they collect about the patient. Sometimes more data is collected to help clarify or better classify a patient's symptoms to aid in a final diagnosis but even with that, they could end up wrongfully diagnosing a patient which is common in the medical field. If the hospital were to implement this model to help aid their medical personnel in concluding a patient's diagnosis and this has a negative outcome either because the model provided the wrong prediction or conclusion or due to a wrongful data entry, the fault would still be on the medical doctor that mis-diagnosed the patient and hence might have either caused more issues and damage to the patient or was unhelpful. The other side of this, is that if the doctor provides sufficient data to the model and the model predicts a certain diagnosis and the doctor does not agree with this conclusion and ends up being wrong, then again, they would be held accountable for not only wrongful diagnosis of the patient but also not following protocol or the results provided from the ML model. So, in either case, it is tricky, and we advise that they use the ML model with care and navigate this new system carefully and also provide other checks and balances to ensure patient safety.
+
+##### The next pitfall we want to point out is that the model would not predict effectively to patients that might fall into the, what we considered as, outliers. We say this because as presented earlier, we have replaced these outliers with the median values of each of these features. This reduces the accuracy of the model to predict a correct diagnosis of any patients that might have values that fall into said outliers.
+
+##### The final pitfall could be that the model would only be effective on or can better predict on patients with demographics, races or areas that the sample was taken from. This could cause a big bias to communities that were not included in the collected sample, and this could result in wrongful diagnosis if the model is used on such patients. For example, if the training and test data for the algorithm during development predominantly involves medical cases of middle-aged Westerners, its medical diagnosis might be less accurate regarding people with East Asian ancestry. Due to different dietary habits or genetic predispositions, the latter might be prone to developing the disease due to different causes or data values compared with the former. Thus, the machine learning algorithm might face difficulties at providing a reliable medical diagnosis for a patient coming from Eastern Asia.
+
+### P) If you were to present your analysis and findings to the CEO of the hospital, what would be your top five key points?
+
+##### The first point we would like to mention is that when observing the different features that are included in the diagnosis of a patient as to whether they have gestational diabetes, we saw that not all the features have a direct or normal correlation to the diagnosis. This means that not all the data collected from the patients is as equally useful for the model's prediction accuracy. We can see this from the graph, on this graph we can see that the "glucose" and blood pressure features have a more bell-shaped curve which indicates that they are more correlated and aid better in the accuracy of the predictions made by the ML mode. By conducting some more tests, we were able to observe that a one unit increase in the glucose value, increases the log odds of getting diagnosed as positive by a factor of 1.08 which is quite high when compared to the remaining variables. So, we advise that you pay more attention to these values when conducting the health screenings of your patients.
+
+##### The second point we would like to make is that based on the models we tested, as mentioned above on our first point, not all of the features are needed to better predict the diagnosis of a patient using our ML model. Unlike medical personnel this model would not necessarily perform better when provided with more features but would be more effective when a select few of the features are used. As mentioned previously in our presentation, we created and tested two models, the first only containing three of our more highly correlated features and the second containing all the provided features. And we have seen that the first model performs better in predicting the diagnosis of the patients more accurately. Hence, you should always pay more attention the features provided to the ML model and to make sure to select what would aid the model to perform better and not to add more features with the expectation of better results.
+
+##### The third point we would like to make is that because we developed our models based on some assumptions and redacted the data based on those assumptions, we must be very vigilant when deploying the ML model and the patients we are using them for. For instance, one of the adjustments we had made was to replace all the data outliers with the median value. When this was done, some of the data points (patient data collected) is ultimately altered, hence the ML model would only best predict and work accurately for patients that were in the adjusted data used to create said model. This could be seen in the graph shown, on the left we have the original plot of the pregnancy feature, here the highest value was 17. Once the data was changed our new altered data shows the highest value to be 13. Hence any patient with more than 13 pregnancies would not be able to get an accurate diagnosis using the ML model.
+
+##### The fourth point we would like to make is that this ML model could be used for possible future diagnosis of patients that have certain values in their data that is similar to patients that have had a positive result to having gestational diabetes in the past. This could be implemented to use caution and better prepare patients that plan for pregnancies of for patients that recently have gotten pregnant. If their data shows that they are more prone to having or developing gestational diabetes, then their physicians could warn them to take better care and lookout for any signs which could help prevent said patients from developing gestational diabetes.
+
+##### And finally, our fifth point, going off of the fourth, is that by using this model you would also be able to create a treatment plan that is more individualized. You could tackle issues with patients that have high values in certain features in their data that have proven to be more correlated and could possibly result in a positive diagnosis of gestational diabetes. You can develop on the existing model by documenting the treatments used for your patients to find which treatments were best effective to help the patient in overcoming the disease. For instance, if a patient is diagnosed as having gestational diabetes and one can observe that the patient's glucose levels are high and when comparing all other features in the data and they do not show any differences with other patients that do not have gestational diabetes, this could be indicative of the cause of the disease and also a good insight as to what type of treatment would best suit this patient. Using this ML model, you would not only be able to foresee and possibly prevent your patients from developing gestational diabetes but also in the case that they do develop this disease, you would be better equipped and prepared to treat your patients in the most effective way. This would not only help save costs of treatments both for your patients and your intuition, but it would result in high patient satisfaction and a much smoother working and operating institution overall.
+
+#### Thank you.
