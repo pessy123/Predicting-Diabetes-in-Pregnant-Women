@@ -1,6 +1,6 @@
 ---
 title: "Group Project"
-author: "Zelalem Denekew"
+author: "Prasanna Muppidi, Zalalem , Anyura, Swathi, Gowtham"
 date: '2022-06-13'
 output: word_document
 ---
